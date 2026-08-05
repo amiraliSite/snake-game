@@ -100,9 +100,9 @@ def draw_button(text, rect, mouse_pos):
 
 
 def get_snake_color(i, n):
-    """رنگ بدنه مار با گرادینت سه مرحله‌ای"""
+    
     if i == 0:
-        return (0, 255, 120)  # سر: سبز نئونی
+        return (0, 255, 120)
     t = i / max(n - 1, 1)
     if t < 0.5:
         return lerp_color((0, 220, 100), (0, 180, 220), t * 2)
@@ -118,20 +118,17 @@ def draw_snake(snake, direction):
         cy = y * CELL + CELL // 2
         positions.append((cx, cy))
 
-    # خطوط اتصال بین بخش‌ها (برای نرم‌تر دیده شدن)
     for i in range(len(positions) - 1):
         t = i / max(n - 1, 1)
         color = get_snake_color(i, n)
         width = max(int(CELL * 0.6 * (1 - t * 0.4)), 4)
         pygame.draw.line(screen, color, positions[i], positions[i + 1], width)
 
-    # دایره‌های بدنه
     for i, (cx, cy) in enumerate(positions):
         t = i / max(n - 1, 1)
         color = get_snake_color(i, n)
         radius = max(int(CELL // 2 * (1 - t * 0.35)), 4)
 
-        # هاله دور بدن
         if i % 3 == 0:
             glow = pygame.Surface((radius * 4, radius * 4), pygame.SRCALPHA)
             pygame.draw.circle(glow, (*color, 30), (radius * 2, radius * 2), radius * 2)
@@ -158,24 +155,18 @@ def draw_snake(snake, direction):
         head_r = CELL // 2 + 1
         pygame.draw.circle(screen, (0, 255, 120), (cx, cy), head_r)
 
-        # چشم‌ها
         for side in (-1, 1):
             ex = cx + dx * 5 + (-dy) * side * 5
             ey = cy + dy * 5 + dx * side * 5
-            # سفیدی چشم
             pygame.draw.circle(screen, (255, 255, 255), (int(ex), int(ey)), 4)
-            # مردمک
             pygame.draw.circle(screen, (0, 0, 0), (int(ex + dx * 2), int(ey + dy * 2)), 2)
-            # برق چشم
             pygame.draw.circle(screen, (255, 255, 255), (int(ex - dx + dy * side), int(ey - dy - dx * side)), 1)
 
-        # زبان (وقتی حرکت میکنه)
         tongue_len = 8 + math.sin(food_pulse * 3) * 3
         tx = cx + dx * (head_r + tongue_len)
         ty = cy + dy * (head_r + tongue_len)
         pygame.draw.line(screen, (255, 80, 80), (cx + dx * head_r, cy + dy * head_r),
                          (int(tx), int(ty)), 2)
-        # چنگال زبان
         fork = 3
         pygame.draw.line(screen, (255, 80, 80),
                          (int(tx), int(ty)),
@@ -230,7 +221,6 @@ def main():
                 if restart_rect.collidepoint(event.pos):
                     return main()
 
-        # Update
         if not game_over:
             direction = next_dir
             hx, hy = snake[0]
@@ -254,19 +244,15 @@ def main():
 
         food_pulse += 0.15
 
-        # Draw
         screen.fill(BG)
 
-        # Grid
         for x in range(0, WIDTH, CELL):
             pygame.draw.line(screen, GRID_COLOR, (x, 0), (x, HEIGHT))
         for y in range(0, HEIGHT, CELL):
             pygame.draw.line(screen, GRID_COLOR, (0, y), (WIDTH, y))
 
-        # Snake خفن
         draw_snake(snake, direction)
 
-        # Food
         fx = food[0] * CELL + CELL // 2
         fy = food[1] * CELL + CELL // 2
         pulse = math.sin(food_pulse) * 3
@@ -277,16 +263,13 @@ def main():
         food_r = int(CELL // 2 - 2 + pulse * 0.3)
         pygame.draw.circle(screen, FOOD_COLOR, (fx, fy), max(food_r, 4))
 
-        # Particles
         draw_particles()
 
-        # HUD
         score_txt = font.render(f"Score: {score}", True, TEXT_COLOR)
         high_txt = small_font.render(f"Best: {high_score}", True, ACCENT)
         screen.blit(score_txt, (12, 8))
         screen.blit(high_txt, (12, 42))
 
-        # Game Over
         if game_over:
             overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
             overlay.fill((0, 0, 0, 180))
