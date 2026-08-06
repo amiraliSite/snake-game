@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+.vscode/
+.idea/
+*.egg-info/
+dist/
+build/
+snake_record.json
